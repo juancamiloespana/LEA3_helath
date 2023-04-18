@@ -1,23 +1,22 @@
+
 import numpy as np
-import sqlite3 as sql
-import pandas as pd
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-import numpy as np
-from matplotlib import pyplot as plt
-import cv2 ### funcion para leer imágenes
-from os import listdir ### para leer rutas
-from tqdm import tqdm
-from os.path import isfile, join
+import cv2 ### para leer imagenes jpg
+from matplotlib import pyplot as plt ## para gráfciar imágnes
+import _funciones as fn#### funciones personalizadas, carga de imágenes
+import joblib ### para descargar array
 
-from keras.models import Sequential
+############################################
+##### ver ejemplo de imágenes cargadas ######
+#############################################
 
-from sklearn import metrics 
+img1=cv2.imread('data/train/NORMAL/IM-0117-0001.jpeg')
+img2 = cv2.imread('data/train/PNEUMONIA/person7_bacteria_29.jpeg')
 
-img1 = cv2.imread('chest_xray/train/NORMAL/IM-0117-0001.jpeg')
-img2 = cv2.imread('chest_xray/train/PNEUMONIA/person7_bacteria_29.jpeg')
+
+############################################
+##### ver ejemplo de imágenes cargadas ######
+#############################################
 
 plt.imshow(img1)
 plt.title('normal')
@@ -27,107 +26,52 @@ plt.imshow(img2)
 plt.title('pneumonia')
 plt.show()
 
+###### representación numérica de imágenes ####
 
+img1.shape ### tamaño de imágenes
+img1.max() ### máximo valor de intensidad en un pixel
+img1.min() ### mínimo valor de intensidad en un pixel
 
-img2.shape
-img2 = cv2.resize(img2 ,(100,100))
-plt.imshow(img2)
-plt.title('pneumonia')
+np.prod(img1.shape) ### 5 millones de observaciones cada imágen
+
+#### dado que se necesitarían muchas observaciones (imágenes para entrenar)
+#### un modelo con tantas observaciones y no tenemos, vamos a reescalar las imágenes
+
+img1 = cv2.resize(img1 ,(100,100))
+plt.imshow(img1)
+plt.title('Normal')
 plt.show()
 
-width = 128 #set width of the image
-num_classes = 2 #set class of the image
-trainpath = 'chest_xray/train/'
-testpath = 'chest_xray/test/'
-trainImg = [trainpath+f for f in listdir(trainpath)]
-testImg = [testpath+f for f in listdir(testpath)]
+################################################################
+######## Código para cargar todas las imágenes #############
+####### reducir su tamaño y convertir en array ################
+################################################################
 
 
-def img2data(path):
-    rawImgs = [] 
-    labels = []
-    
-    for imagePath in (path):
-        for item in tqdm(listdir(imagePath)):
-            file = join(imagePath, item)
-            if file[-1] =='g': ### verificar que se imágen extensión jpg o jpeg
-                img = cv2.imread(file)
-                img = cv2.cvtColor(img , cv2.COLOR_BGR2RGB) 
-                img = cv2.resize(img ,(width,width)) 
-                rawImgs.append(img)
-                l = imagePath.split('/')[2] 
-                if l == 'NORMAL':
-                    labels.append([0])
-                elif l == 'PNEUMONIA':
-                    labels.append([1])
-    return rawImgs, labels
+width = 100 #tamaño para reescalar imágen
+num_classes = 2 #clases variable respuesta
+trainpath = 'data/train/'
+testpath = 'data/test/'
 
-x_train, y_train= img2data(trainImg) #Run in train
-x_test, y_test = img2data(testImg) #Run in test
+x_train, y_train= fn.img2data(trainpath) #Run in train
+x_test, y_test = fn.img2data(testpath) #Run in test
 
 
+#### convertir salidas a numpy array ####
 x_train = np.array(x_train)
 y_train = np.array(y_train)
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
-np.max(x_train)
 x_train.shape
-y_train.shape
+
 x_test.shape
-y_test.shape
-x_train=x_train.astype('float32') ## para poder escalarlo
-x_test=x_test.astype('float32') ## para poder escalarlo
 
+####### salidas del preprocesamiento bases listas ######
 
-x_train /=255 ### escalaro para que quede entre 0 y 1
-x_test /=255
-
-fc_model=keras.models.Sequential([
-    layers.Flatten(input_shape=(128,128,3)),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(64, activation='relu'),
-    layers.Dense(1, activation='sigmoid')
-    
-])
-
-x1=x_train[1]
-x2=x1.flatten('C')
-x2.shape
-
-128*128*3
-
-
-fc_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy','AUC'])
-
-
-fc_model.fit(x_train, y_train, batch_size=20, epochs=10, validation_data=(x_test, y_test))
-
-test_loss, test_acc, test_auc = fc_model.evaluate(x_test, y_test, verbose=2)
-print("Test accuracy:", test_acc)
-
-unique, counts=np.unique(y_train, return_counts=True)
-counts[1]/(counts[0]+counts[1])
-
-pred_test=(fc_model.predict(x_test) > 0.5).astype('int')
-
-cm=metrics.confusion_matrix(y_test,pred, labels=[0,1])
-disp=metrics.ConfusionMatrixDisplay(cm,display_labels=['Pneu', 'Normal'])
-disp.plot()
-
-pred_train=(fc_model.predict(x_train) > 0.5).astype('int')
-
-cm=metrics.confusion_matrix(y_train,pred, labels=[0,1])
-disp=metrics.ConfusionMatrixDisplay(cm,display_labels=['Pneu', 'Normal'])
-disp.plot()
-
-print(metrics.classification_report(y_test, pred_test))
-
-x_train[1]
-
-
-
-#####
-
+joblib.dump(x_train, "x_train.pkl")
+joblib.dump(y_train, "y_train.pkl")
+joblib.dump(x_test, "x_test.pkl")
+joblib.dump(y_test, "y_test.pkl")
 
 
