@@ -1,4 +1,3 @@
-
 import numpy as np
 
 import cv2 ### para leer imagenes jpg
@@ -10,7 +9,7 @@ import joblib ### para descargar array
 ##### ver ejemplo de imágenes cargadas ######
 #############################################
 
-img1=cv2.imread('data/train/NORMAL/IM-0117-0001.jpeg')
+img1=cv2.imread('data/test/NORMAL/IM-0005-0001.jpeg')
 img2 = cv2.imread('data/train/PNEUMONIA/person7_bacteria_29.jpeg')
 
 
@@ -28,16 +27,16 @@ plt.show()
 
 ###### representación numérica de imágenes ####
 
-img1.shape ### tamaño de imágenes
+img2.shape ### tamaño de imágenes
 img1.max() ### máximo valor de intensidad en un pixel
 img1.min() ### mínimo valor de intensidad en un pixel
 
-np.prod(img1.shape) ### 5 millones de observaciones cada imágen
+np.prod(img2.shape) ### 5 millones de observaciones cada imágen
 
 #### dado que se necesitarían muchas observaciones (imágenes para entrenar)
 #### un modelo con tantas observaciones y no tenemos, vamos a reescalar las imágenes
 
-img1 = cv2.resize(img1 ,(100,100))
+img1 = cv2.resize(img1 ,(10,10))
 plt.imshow(img1)
 plt.title('Normal')
 plt.show()
@@ -63,9 +62,13 @@ y_train = np.array(y_train)
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
-x_train.shape
+x_train[]
+np.prod(x_train[1].shape)
+y_train.shape
+
 
 x_test.shape
+y_test.shape
 
 ####### salidas del preprocesamiento bases listas ######
 
