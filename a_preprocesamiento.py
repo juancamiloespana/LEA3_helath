@@ -9,7 +9,7 @@ import joblib ### para descargar array
 ##### ver ejemplo de imágenes cargadas ######
 #############################################
 
-img1=cv2.imread('data/test/NORMAL/IM-0005-0001.jpeg')
+img1=cv2.imread('data\\test\\NORMAL\\IM-0005-0001.jpeg')
 img2 = cv2.imread('data/train/PNEUMONIA/person7_bacteria_29.jpeg')
 
 
