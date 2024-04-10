@@ -1,9 +1,0 @@
-health
-x_train.pkl
-x_test.pkl
-y_train.pkl
-y_test.pkl
-fc_model.pkl
-cnn_model.pkl
-my_dir
-__pycache__
