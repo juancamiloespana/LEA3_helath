@@ -135,11 +135,7 @@ print(metrics.classification_report(y_test, pred_test))
 
 
 
-
-
-
-
-###########Estrategias a usar: regilarization usar una a la vez para ver impacto
+########Estrategias a usar: regilarization usar una a la vez para ver impacto
 dropout_rate = 0.3 ## porcentaje de neuronas que elimina
 
 fc_model2=tf.keras.models.Sequential([

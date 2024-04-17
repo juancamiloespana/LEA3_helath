@@ -1,4 +1,5 @@
 
+
 import numpy as np
 
 from os import listdir ### para hacer lista de archivos en una ruta
@@ -16,7 +17,7 @@ def img2data(path, width=100):
 
     for imagePath in ( list_labels): ### recorre cada carpeta de la ruta ingresada
         
-        files_list=listdir(imagePath)
+        files_list=listdir(imagePath) ### crea una lista con todos los archivos
         for item in tqdm(files_list): ### le pone contador a la lista: tqdm
             file = join(imagePath, item) ## crea ruta del archivo
             if file[-1] =='g': ### verificar que se imágen extensión jpg o jpeg

@@ -1,6 +1,8 @@
 import numpy as np
 
-import cv2 ### para leer imagenes jpg
+import cv2 ### para leer imagenes jpeg
+### pip install opencv-python
+
 from matplotlib import pyplot as plt ## para gráfciar imágnes
 import _funciones as fn#### funciones personalizadas, carga de imágenes
 import joblib ### para descargar array
@@ -28,18 +30,26 @@ plt.show()
 ###### representación numérica de imágenes ####
 
 img2.shape ### tamaño de imágenes
+img1.shape
 img1.max() ### máximo valor de intensidad en un pixel
 img1.min() ### mínimo valor de intensidad en un pixel
 
-np.prod(img2.shape) ### 5 millones de observaciones cada imágen
+np.prod(img1.shape) ### 5 millones de observaciones cada imágen
 
 #### dado que se necesitarían muchas observaciones (imágenes para entrenar)
 #### un modelo con tantas observaciones y no tenemos, vamos a reescalar las imágenes
 
-img1 = cv2.resize(img1 ,(10,10))
-plt.imshow(img1)
+img1_r = cv2.resize(img1 ,(100,100))
+plt.imshow(img1_r)
 plt.title('Normal')
 plt.show()
+np.prod(img1_r.shape)
+
+img2_r = cv2.resize(img2 ,(100,100))
+plt.imshow(img2_r)
+plt.title('Normal')
+plt.show()
+np.prod(img2_r.shape)
 
 ################################################################
 ######## Código para cargar todas las imágenes #############
@@ -56,13 +66,17 @@ x_train, y_train= fn.img2data(trainpath) #Run in train
 x_test, y_test = fn.img2data(testpath) #Run in test
 
 
+
+
 #### convertir salidas a numpy array ####
 x_train = np.array(x_train)
 y_train = np.array(y_train)
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
-x_train[]
+x_train.shape
+
+
 np.prod(x_train[1].shape)
 y_train.shape
 
