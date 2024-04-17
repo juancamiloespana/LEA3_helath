@@ -126,7 +126,6 @@ print("Test auc:", test_auc)
 
 ###### matriz de confusión test
 pred_test=(fc_model.predict(x_test) > 0.50).astype('int')
-
 cm=metrics.confusion_matrix(y_test,pred_test, labels=[1,0])
 disp=metrics.ConfusionMatrixDisplay(cm,display_labels=['Pneu', 'Normal'])
 disp.plot()
@@ -135,11 +134,20 @@ print(metrics.classification_report(y_test, pred_test))
 
 
 
+#################### exportar red ##############
+joblib.dump(fc_model, 'salidas\\fc_model.pkl')
 
 
+######Ejercicio #######
+####usar red neuronal y predecir para las imágenes en la carpeta data\ejercicio_est la probabilidad de tener pneumonia
 
 
+#########################################################################################
+#########################################################################################
 ###########Estrategias a usar: regilarization usar una a la vez para ver impacto
+#########################################################################################
+###############################################################
+
 dropout_rate = 0.3 ## porcentaje de neuronas que elimina
 
 fc_model2=tf.keras.models.Sequential([
@@ -264,98 +272,4 @@ fc_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['AUC'])
 fc_model.fit(x_train, y_train, batch_size=100, epochs=10, validation_data=(x_test, y_test))
 
 
-
-##########################################################
-################ Redes convolucionales ###################
-##########################################################
-
-cnn_model = tf.keras.Sequential([
-    tf.keras.layers.Conv2D(16, kernel_size=(3, 3), activation='relu', input_shape=x_train.shape[1:]),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-    tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
-
-# Compile the model with binary cross-entropy loss and Adam optimizer
-cnn_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['AUC'])
-
-# Train the model for 10 epochs
-cnn_model.fit(x_train, y_train, batch_size=100, epochs=10, validation_data=(x_test, y_test))
-
-
-#######probar una red con regulzarización
-
-
-#####################################################
-###### afinar hiperparameter ########################
-#####################################################
-####instalar paquete !pip install keras-tuner
-
-import keras_tuner as kt
-
-
-##### función con definicion de hiperparámetros a afinar
-
-def build_model(hp):
-    
-    dropout_rate=hp.Float('DO', min_value=0.1, max_value= 0.4, step=0.05)
-    reg_strength = hp.Float("rs", min_value=0.0001, max_value=0.0005, step=0.0001)
-    ####hp.Int
-    ####hp.Choice
-    
-
-    model=tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(input_shape=x_train.shape[1:]),
-        tf.keras.layers.Dense(128, activation='relu',kernel_regularizer=tf.keras.regularizers.l2(reg_strength)),
-        tf.keras.layers.Dropout(dropout_rate),
-        tf.keras.layers.Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(reg_strength)),
-        tf.keras.layers.Dropout(dropout_rate),
-        tf.keras.layers.Dense(1, activation='sigmoid')
-    ])
-   
-    optimizer = hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop'])
-    if optimizer == 'adam':
-        opt = tf.keras.optimizers.Adam(learning_rate=0.001)
-    elif optimizer == 'sgd':
-        opt = tf.keras.optimizers.SGD(learning_rate=0.01)
-    else:
-        opt = tf.keras.optimizers.RMSprop(learning_rate=0.0001)
-   
-    model.compile(
-        optimizer=opt, loss="binary_crossentropy", metrics=["AUC"],
-    )
-    return model
-
-
-
-
-###########
-hp = kt.HyperParameters()
-build_model(hp)
-
-tuner = kt.RandomSearch(
-    hypermodel=build_model,
-    hyperparameters=hp,
-    tune_new_entries=False, ## solo evalúe los hiperparámetros configurados
-    objective=kt.Objective("val_auc", direction="max"),
-    max_trials=10,
-    overwrite=True,
-    directory="my_dir",
-    project_name="helloworld", 
-)
-
-tuner.search(x_train, y_train, epochs=3, validation_data=(x_test, y_test), batch_size=100)
-
-fc_best_model = tuner.get_best_models(num_models=1)[0]
-tuner.results_summary()
-
-
-
-#################### Mejor redes ##############
-
-joblib.dump(fc_best_model, 'fc_model.pkl')
-joblib.dump(cnn_model,'cnn_model.pkl')
 
