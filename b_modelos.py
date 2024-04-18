@@ -7,8 +7,13 @@ from sklearn import metrics ### para analizar modelo
 from sklearn.ensemble import RandomForestClassifier  ### para analizar modelo
 import pandas as pd
 
-from sklearn.ensemble import RandomForestClassifier
 from sklearn import tree
+
+
+import cv2 ### para leer imagenes jpeg
+### pip install opencv-python
+
+from matplotlib import pyplot as plt #
 
 ### cargar bases_procesadas ####
 
@@ -44,6 +49,7 @@ x_train2=x_train.reshape(5216,30000)
 x_test2=x_test.reshape(624, 30000)
 x_train2.shape
 x_test2.shape
+
 
 
 ############################################################
@@ -123,7 +129,7 @@ fc_model.fit(x_train, y_train, batch_size=100, epochs=10, validation_data=(x_tes
 test_loss, test_acc, test_auc, test_recall, test_precision = fc_model.evaluate(x_test, y_test, verbose=2)
 print("Test auc:", test_auc)
 
-
+x_test.shape
 ###### matriz de confusión test
 pred_test=(fc_model.predict(x_test) > 0.50).astype('int')
 cm=metrics.confusion_matrix(y_test,pred_test, labels=[1,0])
@@ -135,7 +141,9 @@ print(metrics.classification_report(y_test, pred_test))
 
 
 #################### exportar red ##############
-joblib.dump(fc_model, 'salidas\\fc_model.pkl')
+# guardar modelo
+fc_model.save('path_to_my_model.h5') 
+
 
 
 ######Ejercicio #######
@@ -270,6 +278,4 @@ fc_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['AUC'])
 
 #####Entrenar el modelo usando el optimizador y arquitectura definidas #########
 fc_model.fit(x_train, y_train, batch_size=100, epochs=10, validation_data=(x_test, y_test))
-
-
 

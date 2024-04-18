@@ -86,9 +86,9 @@ y_test.shape
 
 ####### salidas del preprocesamiento bases listas ######
 
-joblib.dump(x_train, "x_train.pkl")
-joblib.dump(y_train, "y_train.pkl")
-joblib.dump(x_test, "x_test.pkl")
-joblib.dump(y_test, "y_test.pkl")
+joblib.dump(x_train, "salidas\\x_train.pkl")
+joblib.dump(y_train, "salidas\\y_train.pkl")
+joblib.dump(x_test, "salidas\\x_test.pkl")
+joblib.dump(y_test, "salidas\\y_test.pkl")
 
 
