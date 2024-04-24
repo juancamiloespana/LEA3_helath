@@ -142,6 +142,7 @@ print(metrics.classification_report(y_test, pred_test))
 
 #################### exportar red ##############
 # guardar modelo
+
 fc_model.save('path_to_my_model.h5') 
 
 
