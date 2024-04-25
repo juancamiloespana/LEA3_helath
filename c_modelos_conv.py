@@ -7,7 +7,6 @@ from sklearn import metrics ### para analizar modelo
 import pandas as pd
 
 ####instalar paquete !pip install keras-tuner
-
 import keras_tuner as kt
 
 
@@ -18,7 +17,7 @@ y_train = joblib.load('salidas\\y_train.pkl')
 x_test = joblib.load('salidas\\x_test.pkl')
 y_test = joblib.load('salidas\\y_test.pkl')
 
-
+x_train[0]
 
 ############################################################
 ################ Preprocesamiento ##############
@@ -27,7 +26,11 @@ y_test = joblib.load('salidas\\y_test.pkl')
 #### Escalar ######################
 x_train=x_train.astype('float32') ## para poder escalarlo
 x_test=x_test.astype('float32') ## para poder escalarlo
-x_train /=255 ### escalaro para que quede entre 0 y 1
+x_train.max()
+x_train.min()
+
+
+x_train /=255 ### escalarlo para que quede entre 0 y 1, con base en el valor máximo
 x_test /=255
 
 ###### verificar tamaños
@@ -108,7 +111,8 @@ def build_model(hp):
     
     dropout_rate=hp.Float('DO', min_value=0.1, max_value= 0.4, step=0.05)
     reg_strength = hp.Float("rs", min_value=0.0001, max_value=0.0005, step=0.0001)
-    optimizer = hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop'])
+    optimizer = hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop']) ### en el contexto no se debería afinar
+   
     ####hp.Int
     ####hp.Choice
     
@@ -126,6 +130,8 @@ def build_model(hp):
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     
+  
+    
     if optimizer == 'adam':
         opt = tf.keras.optimizers.Adam(learning_rate=0.001)
     elif optimizer == 'sgd':
@@ -136,7 +142,10 @@ def build_model(hp):
     model.compile(
         optimizer=opt, loss="binary_crossentropy", metrics=["AUC"],
     )
+    
+    
     return model
+
 
 
 ###########
@@ -152,11 +161,13 @@ tuner = kt.RandomSearch(
     project_name="helloworld", 
 )
 
+
+
 tuner.search(x_train, y_train, epochs=3, validation_data=(x_test, y_test), batch_size=100)
 
 fc_best_model = tuner.get_best_models(num_models=1)[0]
 tuner.results_summary()
-
+fc_best_model.summary()
 
 
 #################### Mejor redes ##############
@@ -165,5 +176,4 @@ cnn_model.save('salidas\\cnn_model.h5')
 
 
 cargar_modelo=tf.keras.models.load_model('salidas\\cnn_model.h5')
-
 cargar_modelo.summary()
