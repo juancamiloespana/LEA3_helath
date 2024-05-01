@@ -30,4 +30,4 @@ def img2data(path, width=100):
                     labels.append([0])
                 elif l == 'PNEUMONIA':
                     labels.append([1])
-    return rawImgs, labels
+    return rawImgs, labels, files_list

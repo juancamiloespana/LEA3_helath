@@ -89,12 +89,10 @@ cnn_model2 = tf.keras.Sequential([
 ])
 
 # Compile the model with binary cross-entropy loss and Adam optimizer
-cnn_model2.compile(loss='binary_crossentropy', optimizer='adam', metrics=['AUC'])
+cnn_model2.compile(loss='binary_crossentropy', optimizer='adam', metrics=['AUC',"accuracy"])
 
 # Train the model for 10 epochs
 cnn_model2.fit(x_train, y_train, batch_size=100, epochs=3, validation_data=(x_test, y_test))
-
-
 
 
 
@@ -109,9 +107,9 @@ hp = kt.HyperParameters()
 
 def build_model(hp):
     
-    dropout_rate=hp.Float('DO', min_value=0.1, max_value= 0.4, step=0.05)
+    dropout_rate=hp.Float('DO', min_value=0.05, max_value= 0.2, step=0.05)
     reg_strength = hp.Float("rs", min_value=0.0001, max_value=0.0005, step=0.0001)
-    optimizer = hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop']) ### en el contexto no se debería afinar
+    optimizer = hp.Choice('optimizer', ['adam', 'sgd']) ### en el contexto no se debería afinar
    
     ####hp.Int
     ####hp.Choice
@@ -140,7 +138,7 @@ def build_model(hp):
         opt = tf.keras.optimizers.RMSprop(learning_rate=0.001)
    
     model.compile(
-        optimizer=opt, loss="binary_crossentropy", metrics=["AUC"],
+        optimizer=opt, loss="binary_crossentropy", metrics=["Recall"],
     )
     
     
@@ -153,9 +151,9 @@ def build_model(hp):
 tuner = kt.RandomSearch(
     hypermodel=build_model,
     hyperparameters=hp,
-    tune_new_entries=False, ## solo evalúe los hiperparámetros configurados
-    objective=kt.Objective("val_auc", direction="max"),
-    max_trials=10,
+    tune_new_entries=True, 
+    objective=kt.Objective("recall", direction="max"),
+    max_trials=2,
     overwrite=True,
     directory="my_dir",
     project_name="helloworld", 
@@ -166,14 +164,19 @@ tuner = kt.RandomSearch(
 tuner.search(x_train, y_train, epochs=3, validation_data=(x_test, y_test), batch_size=100)
 
 fc_best_model = tuner.get_best_models(num_models=1)[0]
+
+
+
 tuner.results_summary()
 fc_best_model.summary()
 
 
-#################### Mejor redes ##############
-fc_best_model.save('salidas\\fc_model.h5')
-cnn_model.save('salidas\\cnn_model.h5')
+test_loss, test_auc=fc_best_model.evaluate(x_test, y_test)
+pred_test=(fc_best_model.predict(x_test)>=0.50).astype('int')
 
 
-cargar_modelo=tf.keras.models.load_model('salidas\\cnn_model.h5')
-cargar_modelo.summary()
+
+
+#################### exportar modelo afinado ##############
+fc_best_model.save('salidas\\best_model.h5')
+
