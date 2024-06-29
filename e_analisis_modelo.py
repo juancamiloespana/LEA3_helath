@@ -39,7 +39,7 @@ plt.title("probabilidades imágenes en entrenamiento")### conocer el comportamie
 
 threshold_neu=0.508
 
-pred_test=(modelo.predict(x_test)>=0.5080).astype('int')
+pred_test=(modelo.predict(x_test)>=threshold_neu).astype('int')
 print(metrics.classification_report(y_test, pred_test))
 cm=metrics.confusion_matrix(y_test,pred_test, labels=[1,0])
 disp=metrics.ConfusionMatrixDisplay(cm,display_labels=['Pneu', 'Normal'])
