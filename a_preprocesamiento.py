@@ -62,8 +62,8 @@ num_classes = 2 #clases variable respuesta
 trainpath = 'data/train/'
 testpath = 'data/test/'
 
-x_train, y_train= fn.img2data(trainpath) #Run in train
-x_test, y_test = fn.img2data(testpath) #Run in test
+x_train, y_train, file_list= fn.img2data(trainpath) #Run in train
+x_test, y_test, file_list = fn.img2data(testpath) #Run in test
 
 
 
@@ -75,6 +75,7 @@ x_test = np.array(x_test)
 y_test = np.array(y_test)
 
 x_train.shape
+x_test.shape
 
 
 np.prod(x_train[1].shape)

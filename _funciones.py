@@ -15,7 +15,7 @@ def img2data(path, width=100):
     
     list_labels = [path+f for f in listdir(path)] ### crea una lista de los archivos en la ruta (Normal /Pneumonia)
 
-    for imagePath in ( list_labels): ### recorre cada carpeta de la ruta ingresada
+    for imagePath in list_labels: ### recorre cada carpeta de la ruta ingresada
         
         files_list=listdir(imagePath) ### crea una lista con todos los archivos
         for item in tqdm(files_list): ### le pone contador a la lista: tqdm

@@ -23,7 +23,6 @@ x_test = joblib.load('salidas\\x_test.pkl')
 y_test = joblib.load('salidas\\y_test.pkl')
 
 
-
 ############################################################
 ################ Preprocesamiento ##############
 ############################################################
@@ -49,6 +48,8 @@ x_train2=x_train.reshape(5216,30000)
 x_test2=x_test.reshape(624, 30000)
 x_train2.shape
 x_test2.shape
+
+x_train2[1]
 
 
 
