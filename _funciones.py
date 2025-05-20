@@ -25,7 +25,7 @@ def img2data(path, width=100):
                 img = cv2.cvtColor(img , cv2.COLOR_BGR2RGB) ### invierte el orden de los colores en el array para usar el más estándar RGB
                 img = cv2.resize(img ,(width,width)) ### cambia resolución de imágnenes
                 rawImgs.append(img) ###adiciona imágen al array final
-                l = imagePath.split('/')[2] ### identificar en qué carpeta está
+                l = imagePath.split('/')[-1] ### identificar en qué carpeta está
                 if l == 'NORMAL':  ### verificar en qué carpeta está para asignar el label
                     labels.append([0])
                 elif l == 'PNEUMONIA':

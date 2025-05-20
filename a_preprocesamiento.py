@@ -35,7 +35,7 @@ img1.shape
 img1.max() ### máximo valor de intensidad en un pixel
 img1.min() ### mínimo valor de intensidad en un pixel
 
-np.prod(img1.shape) ### 5 millones de variables representan cada imágen
+np.prod(img2.shape) ### 5 millones de variables representan cada imágen
 
 #### dado que se necesitarían muchas observaciones (imágenes para entrenar)
 #### un modelo con tantas observaciones y no tenemos, vamos a reescalar las imágenes
@@ -63,8 +63,8 @@ num_classes = 2 #clases variable respuesta
 trainpath = 'data/train/'
 testpath = 'data/test/'
 
-x_train, y_train, file_list= fn.img2data(trainpath) #Run in train
-x_test, y_test, file_list = fn.img2data(testpath) #Run in test
+x_train, y_train, file_list= fn.img2data(trainpath, width=100) #Run in train
+x_test, y_test, file_list = fn.img2data(testpath, width=100) #Run in test
 
 
 
