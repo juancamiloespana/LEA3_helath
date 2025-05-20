@@ -1,7 +1,8 @@
 import numpy as np
 
+##!pip install opencv-python
 import cv2 ### para leer imagenes jpeg
-### pip install opencv-python
+
 
 from matplotlib import pyplot as plt ## para gráfciar imágnes
 import _funciones as fn#### funciones personalizadas, carga de imágenes
@@ -12,7 +13,7 @@ import joblib ### para descargar array
 #############################################
 
 img1=cv2.imread('data\\test\\NORMAL\\IM-0005-0001.jpeg')
-img2 = cv2.imread('data/train/PNEUMONIA/person7_bacteria_29.jpeg')
+img2 = cv2.imread('data\\train\\PNEUMONIA\\person7_bacteria_29.jpeg')
 
 
 ############################################
@@ -34,7 +35,7 @@ img1.shape
 img1.max() ### máximo valor de intensidad en un pixel
 img1.min() ### mínimo valor de intensidad en un pixel
 
-np.prod(img1.shape) ### 5 millones de observaciones cada imágen
+np.prod(img1.shape) ### 5 millones de variables representan cada imágen
 
 #### dado que se necesitarían muchas observaciones (imágenes para entrenar)
 #### un modelo con tantas observaciones y no tenemos, vamos a reescalar las imágenes
@@ -74,12 +75,14 @@ y_train = np.array(y_train)
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
+
+
 x_train.shape
-x_test.shape
-
-
-np.prod(x_train[1].shape)
 y_train.shape
+
+x_train[0].shape ### ver tamaño de la primera imágen
+np.prod(x_train[0].shape)
+
 
 
 x_test.shape
